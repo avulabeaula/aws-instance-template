@@ -16,6 +16,19 @@ module "launch_template" {
   instance_type     = var.instance_type
   key_name          = var.key_name
   security_groups   = var.security_groups
+  user_data         = <<-EOF
+                      #!/bin/bash
+                      # Update the apt package index and install any available updates
+                      sudo apt update
+                      sudo apt upgrade -y
+
+                      # Install Node.js (using NodeSource repository)
+                      curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+                      sudo apt-get install -y nodejs
+
+                      # Install the git-all metapackage
+                      sudo apt-get install -y git-all
+                      EOF
 
 
   block_device_mappings = [
