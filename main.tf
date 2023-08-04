@@ -20,6 +20,18 @@ locals {
                       EOF
 }
 
+resource "aws_security_group" "allow_ssh" {
+  name        = var.sg_name
+  description = var.sg_description
+  
+  ingress {
+    from_port   = var.from_port
+    to_port     = var.to_port
+    protocol    = var.protocol
+    cidr_blocks = var.sg_cidr 
+  }
+}
+
 module "launch_template" {
   source  = "terraform-aws-modules/autoscaling/aws"
 
@@ -32,7 +44,7 @@ module "launch_template" {
   image_id          = var.ami_id
   instance_type     = var.instance_type
   key_name          = var.key_name
-  security_groups   = var.security_groups
+  security_groups   = [aws_security_group.allow_ssh.id]
   user_data         = base64encode(local.user_data)
 
 
@@ -55,7 +67,7 @@ module "launch_template" {
       delete_on_termination = true
       description           = "eth0"
       device_index          = 0
-      security_groups       = var.security_groups
+      security_groups       = [aws_security_group.allow_ssh.id]
       subnet_id             = "subnet-0e4c8f1112e78c6a2"
     }
   ]
@@ -76,9 +88,9 @@ module "ec2_instance" {
 
   name = "single-instance"
   instance_type          = var.instance_type
-  key_name               = "temp"
+  key_name               = var.key_name
   monitoring             = true
-  vpc_security_group_ids = var.security_groups
+  vpc_security_group_ids = [aws_security_group.allow_ssh.id]
   subnet_id              = var.subnet_id
   ami_ssm_parameter      = "/aws/service/canonical/ubuntu/server/22.04/stable/current/amd64/hvm/ebs-gp2/ami-id"
   launch_template        = {

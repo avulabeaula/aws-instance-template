@@ -23,20 +23,6 @@ variable "instance_type" {
   default     = "t2.micro"
 }
 
-variable "key_name" {
-  description = "The key name that should be used for the instance"
-  type        = string
-  default     = null
-}
-
-variable "security_groups" {
-  description = "A list of security group IDs to associate"
-  type        = list(string)
-  default     = []
-}
-
-
-
 variable "env" {
   description = "Environment details"
   type        = string
@@ -57,3 +43,10 @@ variable "root_volume_type" {
 variable "subnet_id" {}
 variable "aws_access_key" {}
 variable "aws_secret_key" {}
+variable "key_name" {}
+variable "sg_name" {}
+variable "sg_description" {}
+variable "from_port" {}
+variable "to_port" {}
+variable "protocol" {}
+variable "sg_cidr" {}
