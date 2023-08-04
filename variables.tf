@@ -55,3 +55,5 @@ variable "root_volume_type" {
 }
 
 variable "subnet_id" {}
+variable "aws_access_key" {}
+variable "aws_secret_key" {}
